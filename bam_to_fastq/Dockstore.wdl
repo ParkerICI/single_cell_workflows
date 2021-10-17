@@ -11,12 +11,10 @@ task bam_to_fastq_10x {
   }
 
   command {
-    export BASE_DIR=`pwd`
-    echo "BASE_DIR=$BASE_DIR"
-    curl -L https://github.com/10XGenomics/bamtofastq/releases/download/${version}/bamtofastq_${os} --output $BASE_DIR/bamtofastq
-    chmod +x $BASE_DIR/bamtofastq
-    $BASE_DIR/bamtofastq --nthreads=${nthreads} ${bam_file} $BASE_DIR/fastq
-    cd $BASE_DIR/fastq
+    export BASE_DIR=/usr/gitc
+    mkdir fastq_out
+    $BASE_DIR/bamtofastq_linux --nthreads=${nthreads} ${bam_file} fastq_out
+    cd $BASE_DIR/fastq_out
     tar cvf $BASE_DIR/${sample_id}_fastq.tar .
   }
 
