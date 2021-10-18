@@ -1,29 +1,5 @@
 version 1.0
 
-task bam_to_fastq {
-
-  input {
-    String os
-    String version 
-    File bam_file
-    Int nthreads
-  }
-
-  command {
-    wget https://github.com/10XGenomics/bamtofastq/releases/download/${version}/bamtofastq_${os}
-    bamtofastq_${os} --nthreads=${nthreads} ${bam_file} ./fastq
-  }
-
-  output {
-    Array[File] fastq_dirs = glob("./fastq/*")      
-  }
-
-  runtime {
-   cpu: "${nthreads}"
-  }
-
-}
-
 task cellranger_count {
   input {
     File ref_dir

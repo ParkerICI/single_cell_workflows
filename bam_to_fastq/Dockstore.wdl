@@ -3,28 +3,27 @@ version 1.0
 task bam_to_fastq_10x {
 
   input {
-    String os
-    String version 
+    String base_dir = "/usr/gitc"
     String sample_id
     File bam_file
     Int nthreads
   }
 
   command {
-    export BASE_DIR=/usr/gitc
     mkdir fastq_out
-    $BASE_DIR/bamtofastq_linux --nthreads=${nthreads} ${bam_file} fastq_out
-    cd $BASE_DIR/fastq_out
-    tar cvf $BASE_DIR/${sample_id}_fastq.tar .
+    ${base_dir}/bamtofastq --nthreads=${nthreads} ${bam_file} fastq_out
+    cd ${base_dir}/fastq_out
+    tar cvf ${base_dir}/${sample_id}_fastq.tar .
   }
 
   output {
-    File fastq_tar = "${sample_id}_fastq.tar"
+    File fastq_tar = "${base_dir}/${sample_id}_fastq.tar"
     File out = stdout()
   }
 
   runtime {
    cpu: "${nthreads}"
+   docker: 'quay.io/cumulus/cellranger:6.1.1'
   }
 }
 
