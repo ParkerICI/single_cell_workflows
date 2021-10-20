@@ -10,13 +10,12 @@ task bam_to_fastq_10x {
   }
 
   command {
-    ${base_dir}/bamtofastq --nthreads=${nthreads} ${bam_file} ${base_dir}/fastq_out
-    cd ${base_dir}/fastq_out
-    tar cvf ${base_dir}/${sample_id}_fastq.tar .
+    ${base_dir}/bamtofastq --nthreads=${nthreads} ${bam_file} fastq_out
+    tar cvf - ${sample_id}_fastq.tar -C fastq_out . > ${sample_id}_fastq.tar
   }
 
   output {
-    File fastq_tar = "${base_dir}/${sample_id}_fastq.tar"
+    File fastq_tar = "${sample_id}_fastq.tar"
     File out = stdout()
     File err = stderr()
   }
