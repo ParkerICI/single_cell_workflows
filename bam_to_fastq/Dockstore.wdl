@@ -6,11 +6,10 @@ task bam_to_fastq_10x {
     String base_dir = "/usr/gitc"
     String sample_id
     File bam_file
-    Int nthreads
   }
 
   command {
-    ${base_dir}/bamtofastq --nthreads=${nthreads} ${bam_file} fastq_out
+    ${base_dir}/bamtofastq --nthreads=32 ${bam_file} fastq_out
     tar cvf - ${sample_id}_fastq.tar -C fastq_out . > ${sample_id}_fastq.tar
   }
 
@@ -21,8 +20,9 @@ task bam_to_fastq_10x {
   }
 
   runtime {
-   cpu: "${nthreads}"
-   memory: "32GB"
+   cpu: "32"
+   memory: "128GB"
+   disk: "local-disk 350 SSD"
    docker: "gcr.io/pici-internal/cellranger:6.1.1"
   }
 }
@@ -30,15 +30,13 @@ task bam_to_fastq_10x {
 workflow bam_to_fastq {
   
   input {
-    String sample_id
-    Int nthreads = 30
+    String sample_id    
     File bam_file
   }
     
   call bam_to_fastq_10x {
     input:
       bam_file = bam_file,
-      nthreads = nthreads,
       sample_id = sample_id
   }
 

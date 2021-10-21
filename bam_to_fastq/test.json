@@ -1,5 +1,4 @@
 {
-    "bam_to_fastq.nthreads":2,
     "bam_to_fastq.bam_file": "/Users/mschachter/data/single_cell_testdata/egfr.bam",
     "bam_to_fastq.sample_id":"SFxxxx"
 }
