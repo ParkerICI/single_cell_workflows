@@ -9,8 +9,8 @@ task bam_to_fastq_10x {
   }
 
   command {
-    ${base_dir}/bamtofastq --nthreads=32 ${bam_file} fastq_out
-    tar cvf - ${sample_id}_fastq.tar -C fastq_out . > ${sample_id}_fastq.tar
+    ${base_dir}/bamtofastq --nthreads=32 "${bam_file}" fastq_out
+    tar cvf - "${sample_id}_fastq.tar" -C fastq_out . > "${sample_id}_fastq.tar"
   }
 
   output {
