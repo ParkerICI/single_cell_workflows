@@ -22,7 +22,7 @@ task bam_to_fastq_10x {
   runtime {
    cpu: "32"
    memory: "128GB"
-   disk: "local-disk 350 SSD"
+   disks: "local-disk 350 SSD"
    docker: "gcr.io/pici-internal/cellranger:6.1.1"
   }
 }
