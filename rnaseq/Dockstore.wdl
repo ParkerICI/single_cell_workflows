@@ -2,46 +2,51 @@ version 1.0
 
 task cellranger_count {
   input {
-    File ref_dir
+    #File transcriptome_tar = "gs://pici-genome-references-master/files-for-specific-methods/cellranger_rnaseq/GRCh38.p13.tar"
+    File transcriptome_tar = "gs://pici-genome-references-master/files-for-specific-methods/cellranger_rnaseq/GRCh38.p13.egfr.tar"
+    File fastq_tar
     String sample_id
-    Array[File] fastq_dirs
-    Int nthreads
-    Int mem_gb
-    Int ncores
+    Boolean include_introns
   }
 
   command {
     
-    cellranger count \
-      --transcriptome=${ref_dir} \
-      --include-introns \
-      --disable-ui \
-      --no-bam \
-      --id ${sample_id} \
-      --fastqs ${fastq_dirs} \
-      --localcores ${ncores} \
-      --localmem ${mem_gb}
+    String include_introns_str = ""
+    if (include_introns) {
+      include_introns_str = "--include-introns"
+    }
 
+    tar xvf ${transcriptome_tar}
+    tar xvf ${fastq_tar} 2> tar_output.txt
+
+
+
+    #cellranger count ${include_introns_str} \
+    #  --transcriptome=GRCh38.p13 \
+    #  --disable-ui \
+    #  --no-bam \
+    #  --id ${sample_id} \
+    #  --fastqs ${fastq_dirs} \
+    #  --localcores 32 \
+    #  --localmem 120
   }
 
   output {
-    File response = stdout()
+    File out = stdout()
+    File err = stderr()
   }
 
   runtime {
-   docker: 'quay.io/cumulus/cellranger:6.1.1'
+   cpu: "32"
+   memory: "128GB"
+   disks: "local-disk 350 SSD"
+   #docker: "gcr.io/pici-internal/cellranger:6.1.1"
   }
 }
 
 workflow cellranger_rnaseq {
   
   input {
-    String? bam_to_fastq_os = "macos"
-    String? bam_to_fastq_version = "v1.3.5"
-    
-    Int? ncores = 30
-    Int? mem_gb = 120
-
     File ref_dir
     String sample_id
 
