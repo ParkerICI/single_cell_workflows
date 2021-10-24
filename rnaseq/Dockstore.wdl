@@ -13,6 +13,8 @@ task cellranger_count {
     Int local_mem
   }
 
+  Int local_mem_to_use = floor(0.9*local_mem)
+
   command {
     tar xvf ${transcriptome_tar}
     tar xvf ${fastq_tar} &> tar_output.txt
@@ -56,17 +58,23 @@ task cellranger_count {
     ${base_dir}/cellranger/cellranger count ${extra_args} \
       --transcriptome=${transcriptome_name} \
       --disable-ui \
-      --no-bam \
       --id ${sample_id} \
       --fastqs $FASTQ_DIRS \
       --localcores ${local_cores} \
-      --localmem ${local_mem}
+      --localmem ${local_mem_to_use}
 
     tar cvzf ${sample_id}_cellranger_output.tgz ${sample_id}
   }
 
   output {
-    File cellranger_output = "${sample_id}_cellranger_output.tgz"
+    File raw_counts = "${sample_id}/outs/raw_feature_bc_matrix.h5"
+    File filtered_counts = "${sample_id}/outs/filtered_feature_bc_matrix.h5"
+    File bam_aligned = "${sample_id}/outs/possorted_genome_bam.bam"
+    File bam_aligned_index = "${sample_id}/outs/possorted_genome_bam.bam.bai"
+
+    File metrics_summary = "${sample_id}/outs/metrics_summary.csv"
+    File web_summary = "${sample_id}/outs/web_summary.html"
+
     File out = stdout()
     File err = stderr()
   }
@@ -105,7 +113,14 @@ workflow cellranger_rnaseq {
   }
 
   output {
-    File cellranger_output = cellranger_count.cellranger_output
+    File raw_counts = cellranger_count.raw_counts
+    File filtered_counts = cellranger_count.filtered_counts
+    File bam_aligned = cellranger_count.bam_aligned
+    File bam_aligned_index = cellranger_count.bam_aligned_index
+
+    File metrics_summary = cellranger_count.metrics_summary
+    File web_summary = cellranger_count.web_summary
+
     File out = cellranger_count.out
     File err = cellranger_count.err
   }
