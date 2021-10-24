@@ -15,26 +15,41 @@ task cellranger_count {
 
   command {
     tar xvf ${transcriptome_tar}
-    tar xvf ${fastq_tar} 2> tar_output.txt
+    tar xvf ${fastq_tar} &> tar_output.txt
+
+    ls -alh
+    echo "tar_output="
+    cat tar_output.txt
 
     python <<CODE
-      def write_fastq_dirs(tar_output_file, output_file):
-        with open(tar_output_file, 'r') as f:
-          fpaths = [line.split(' ')[-1].strip() for line in x if len(line.split(' ')) > 1]
-        fastq_ext = ['fastq', 'fa', 'fq', 'fasta']
-        root_dirs = dict()
-        for p in fpaths:
-          ext_list = [p.endswith(ext) or p.endswith(ext + '.gz') for ext in fastq_ext]
-          if any(ext_list):
-            root_dir = p.split('/')[0]
-            root_dirs[root_dir] = True
-        
-        with open(output_file, 'w') as f:
-          f.write(','.join(root_dirs.keys()))
+    import os
+    def write_fastq_dirs(tar_output_file, output_file):
+      with open(tar_output_file, 'r') as f:
+        lines = f.readlines()
+      print('lines=')
+      print(lines)
+      fpaths = [line.strip() for line in lines if len(line.strip()) > 0]
+      print('fpaths=')
+      print(fpaths)
+      fastq_ext = ['fastq', 'fa', 'fq', 'fasta']
+      root_dirs = dict()
+      for p in fpaths:
+        print('p=',p)
+        ext_list = [p.endswith(ext) or p.endswith(ext + '.gz') for ext in fastq_ext]
+        if any(ext_list):
+          root_dir = p.split('/')[0]
+          root_dirs[root_dir] = True
+      
+      with open(output_file, 'w') as f:
+        f.write(','.join(root_dirs.keys()))
 
-      write_fastq_dirs('tar_output.txt', 'fastq_dirs.txt')        
+    if os.path.exists('tar_output.txt'):
+      write_fastq_dirs('tar_output.txt', 'fastq_dirs.txt')  
     CODE
-    >>>
+
+    ls -alh
+    echo "fastq_dirs="
+    cat fastq_dirs.txt
 
     export FASTQ_DIRS=`cat fastq_dirs.txt`
 

@@ -1,9 +1,9 @@
 {
     "cellranger_rnaseq.transcriptome_name":"GRCh38.p13.egfr",
-    "cellranger_rnaseq.transcriptome_tar":"/testdata/ref/GRCh38.p13.egfr.tar",
+    "cellranger_rnaseq.transcriptome_tar":"/Users/mschachter/data/single_cell_testdata/ref/GRCh38.p13.egfr.tar",
     "cellranger_rnaseq.extra_args":"--include-introns",
     "cellranger_rnaseq.local_cores":1,
     "cellranger_rnaseq.local_mem":1,
-    "cellranger_rnaseq.fastq_tar":"/testdata/SFxxxx_fastq.tar",
+    "cellranger_rnaseq.fastq_tar":"/Users/mschachter/data/single_cell_testdata/SFxxxx_fastq.tar",
     "cellranger_rnaseq.sample_id":"SFxxxx"
 }
