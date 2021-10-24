@@ -28,15 +28,10 @@ task cellranger_count {
     def write_fastq_dirs(tar_output_file, output_file):
       with open(tar_output_file, 'r') as f:
         lines = f.readlines()
-      print('lines=')
-      print(lines)
       fpaths = [line.strip() for line in lines if len(line.strip()) > 0]
-      print('fpaths=')
-      print(fpaths)
       fastq_ext = ['fastq', 'fa', 'fq', 'fasta']
       root_dirs = dict()
       for p in fpaths:
-        print('p=',p)
         ext_list = [p.endswith(ext) or p.endswith(ext + '.gz') for ext in fastq_ext]
         if any(ext_list):
           root_dir = p.split('/')[0]
@@ -62,8 +57,6 @@ task cellranger_count {
       --fastqs $FASTQ_DIRS \
       --localcores ${local_cores} \
       --localmem ${local_mem_to_use}
-
-    tar cvzf ${sample_id}_cellranger_output.tgz ${sample_id}
   }
 
   output {
