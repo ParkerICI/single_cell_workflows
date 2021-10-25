@@ -83,7 +83,7 @@ task cellranger_count {
 workflow cellranger_rnaseq {
   
   input {
-    String transcriptome_name = "GRCh38.p13.egfr"
+    String transcriptome_name = "GRCh38.p13"
     File transcriptome_tar = "gs://pici-genome-references-master/files-for-specific-methods/cellranger_rnaseq/${transcriptome_name}.tar"
     String extra_args = " "
     Int local_cores = 1
