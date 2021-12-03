@@ -16,8 +16,8 @@ task cellranger_count {
   Int local_mem_to_use = floor(0.9*local_mem)
 
   command {
-    tar xvf ${transcriptome_tar}
-    tar xvf ${fastq_tar} &> tar_output.txt
+    tar xvf "${transcriptome_tar}"
+    tar xvf "${fastq_tar}" &> tar_output.txt
 
     ls -alh
     echo "tar_output="
@@ -54,7 +54,7 @@ task cellranger_count {
       --transcriptome=${transcriptome_name} \
       --disable-ui \
       --id ${sample_id} \
-      --fastqs $FASTQ_DIRS \
+      --fastqs "$FASTQ_DIRS" \
       --localcores ${local_cores} \
       --localmem ${local_mem_to_use}
   }
