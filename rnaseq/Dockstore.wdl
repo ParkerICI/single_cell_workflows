@@ -34,7 +34,11 @@ task cellranger_count {
       for p in fpaths:
         ext_list = [p.endswith(ext) or p.endswith(ext + '.gz') for ext in fastq_ext]
         if any(ext_list):
-          root_dir = p.split('/')[0]
+          file_parts = p.split('/')
+          if len(file_parts) == 1:
+            root_dir = '.'
+          else:
+            root_dir = p.split('/')[0]
           root_dirs[root_dir] = True
       
       with open(output_file, 'w') as f:
