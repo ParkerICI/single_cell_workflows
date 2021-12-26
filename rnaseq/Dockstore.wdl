@@ -11,6 +11,7 @@ task cellranger_count {
     String extra_args
     Int local_cores
     Int local_mem
+    Int local_disk_mem
   }
 
   Int local_mem_to_use = floor(0.9*local_mem)
@@ -38,7 +39,7 @@ task cellranger_count {
           if len(file_parts) == 1:
             root_dir = '.'
           else:
-            root_dir = p.split('/')[0]
+            root_dir = file_parts[0]
           root_dirs[root_dir] = True
       
       with open(output_file, 'w') as f:
@@ -79,7 +80,7 @@ task cellranger_count {
   runtime {
    cpu: "${local_cores}"
    memory: "${local_mem}GB"
-   disks: "local-disk 350 SSD"
+   disks: "local-disk ${local_disk_mem} SSD"
    docker: "gcr.io/pici-internal/cellranger:6.1.1"
   }
 }
@@ -92,6 +93,7 @@ workflow cellranger_rnaseq {
     String extra_args = " "
     Int local_cores = 1
     Int local_mem = 1
+    Int local_disk_mem = 100
 
     File fastq_tar
     String sample_id
@@ -106,7 +108,8 @@ workflow cellranger_rnaseq {
       extra_args = extra_args,
       sample_id = sample_id,
       local_cores = local_cores,
-      local_mem = local_mem
+      local_mem = local_mem,
+      local_disk_mem = local_disk_mem
   }
 
   output {
